@@ -7,7 +7,7 @@
 import random
 from logging import getLogger
 
-from PIL import ImageFilter
+from PIL import ImageFilter, Image
 import numpy as np
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
