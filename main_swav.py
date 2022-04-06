@@ -30,7 +30,7 @@ from src.utils import (
     AverageMeter,
     init_distributed_mode,
 )
-from src.multicropdataset import MultiCropDataset
+from src.multicropdataset import MultiCropDataset_CT
 import src.resnet50 as resnet_models
 
 logger = getLogger()
@@ -128,8 +128,9 @@ def main():
     logger, training_stats = initialize_exp(args, "epoch", "loss")
 
     # build data
-    train_dataset = MultiCropDataset(
-        args.data_path,
+    paths_list = glob(args.data_path)
+    train_dataset = MultiCropDataset_molat(
+        paths_list,
         args.size_crops,
         args.nmb_crops,
         args.min_scale_crops,
