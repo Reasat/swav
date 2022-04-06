@@ -69,7 +69,7 @@ class MultiCropDataset_molat(datasets.ImageFolder):
           nmb_crops,
           min_scale_crops,
           max_scale_crops,
-          size_dataset=-1,
+          size_dataset=100000,
           return_index=False,
           seed = 42,
       ):
