@@ -60,6 +60,56 @@ class MultiCropDataset(datasets.ImageFolder):
             return index, multi_crops
         return multi_crops
 
+    
+class MultiCropDataset_molat(datasets.ImageFolder):
+      def __init__(
+          self,
+          path_list,
+          size_crops,
+          nmb_crops,
+          min_scale_crops,
+          max_scale_crops,
+          size_dataset=-1,
+          return_index=False,
+          seed = 42,
+      ):
+          #super(MultiCropDataset, self).__init__(data_path)
+          assert len(size_crops) == len(nmb_crops)
+          assert len(min_scale_crops) == len(nmb_crops)
+          assert len(max_scale_crops) == len(nmb_crops)
+  
+          self.samples = path_list
+          if size_dataset >= 0:
+              np.random.seed(seed)
+              self.samples = np.random.choice(self.samples, size_dataset, replace = False)
+          print('selected number of samples', len(self.samples))
+          self.return_index = return_index
+  
+          color_transform = [get_color_distortion(), PILRandomGaussianBlur()]
+          mean = [0.485, 0.456, 0.406]
+          std = [0.228, 0.224, 0.225]
+          trans = []
+          for i in range(len(size_crops)):
+              randomresizedcrop = transforms.RandomResizedCrop(
+                  size_crops[i],
+                  scale=(min_scale_crops[i], max_scale_crops[i]),
+              )
+              trans.extend([transforms.Compose([
+                  randomresizedcrop,
+                  transforms.RandomHorizontalFlip(p=0.5),
+                  transforms.Compose(color_transform),
+                  transforms.ToTensor(),
+                  transforms.Normalize(mean=mean, std=std)])
+              ] * nmb_crops[i])
+          self.trans = trans
+      def __getitem__(self, index):
+          path = self.samples[index]
+          image = Image.open(path)
+          multi_crops = list(map(lambda trans: trans(image), self.trans))
+          if self.return_index:
+              return index, multi_crops
+          return multi_crops
+  
 class Dataset_molat(datasets.ImageFolder):
       def __init__(
           self,
