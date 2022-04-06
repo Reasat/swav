@@ -30,7 +30,7 @@ from src.utils import (
     AverageMeter,
     init_distributed_mode,
 )
-from src.multicropdataset import MultiCropDataset_CT
+from src.multicropdataset import MultiCropDataset_molat
 import src.resnet50 as resnet_models
 
 logger = getLogger()
