@@ -60,6 +60,35 @@ class MultiCropDataset(datasets.ImageFolder):
             return index, multi_crops
         return multi_crops
 
+class Dataset_molat(datasets.ImageFolder):
+      def __init__(
+          self,
+          path_list,
+          seed = 42,
+          size_dataset = 100000,
+          trans = None,
+      ):
+          #super(MultiCropDataset_CT, self).__init__(label_file)
+  
+          self.samples = path_list
+  
+          if size_dataset >= 0:
+              np.random.seed(seed)
+              self.samples = np.random.choice(self.samples, size_dataset, replace = False)
+          print('selected number of samples', len(self.samples))
+  
+          self.trans = trans
+  
+      def __len__(self):
+          return len(self.samples)
+  
+      def __getitem__(self, index):
+          path = self.samples[index]
+          image = Image.open(path)
+          if self.trans is not None:
+              image = self.trans(image)
+          return image
+
 
 class PILRandomGaussianBlur(object):
     """
